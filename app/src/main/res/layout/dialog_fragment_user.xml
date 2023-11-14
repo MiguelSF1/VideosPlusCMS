@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/username_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Write username..."
+        android:minHeight="48dp"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/password_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/username_textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/password_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Write password..."
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/password_textView"
+        app:layout_constraintTop_toBottomOf="@+id/username_editText" />
+
+    <TextView
+        android:id="@+id/username_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="29dp"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="Username"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/password_textView"
+        app:layout_constraintEnd_toStartOf="@+id/username_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/password_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="Password"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/password_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username_textView" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

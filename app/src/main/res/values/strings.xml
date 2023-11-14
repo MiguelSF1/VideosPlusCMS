@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">VideosPlusCMS</string>
+    <string name="user_creation_button">Create User</string>
 </resources>
