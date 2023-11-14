@@ -1,6 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/format_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Write format..."
+        android:inputType="text"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/resolution_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/format_textView"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/resolution_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Write resolution..."
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/link_editText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/resolution_textView"
+        app:layout_constraintTop_toBottomOf="@+id/format_editText" />
+
+    <TextView
+        android:id="@+id/format_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="Format"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/resolution_textView"
+        app:layout_constraintEnd_toStartOf="@+id/format_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/resolution_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="Resolution"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/link_textView"
+        app:layout_constraintEnd_toStartOf="@+id/resolution_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/format_textView" />
+
+    <TextView
+        android:id="@+id/link_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="Link"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/link_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/resolution_textView" />
+
+    <EditText
+        android:id="@+id/link_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:minHeight="48dp"
+        android:hint="Write link..."
+        android:inputType="text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/link_textView"
+        app:layout_constraintTop_toBottomOf="@+id/resolution_editText" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

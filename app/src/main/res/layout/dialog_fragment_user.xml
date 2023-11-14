@@ -31,7 +31,6 @@
         android:id="@+id/username_textView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="29dp"
         android:height="48dp"
         android:gravity="center_vertical"
         android:text="Username"
