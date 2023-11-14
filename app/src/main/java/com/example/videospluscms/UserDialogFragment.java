@@ -27,6 +27,7 @@ public class UserDialogFragment extends DialogFragment {
     private String username = null;
     private String password = null;
     private final int requestType;
+    private int userId = -1;
     private final Activity activity;
 
     public UserDialogFragment(Activity activity) {
@@ -34,7 +35,8 @@ public class UserDialogFragment extends DialogFragment {
         this.activity = activity;
     }
 
-    public UserDialogFragment(String username, String password, Activity activity) {
+    public UserDialogFragment(int userId,String username, String password, Activity activity) {
+        this.userId = userId;
         this.username = username;
         this.password = password;
         this.activity = activity;
@@ -78,6 +80,7 @@ public class UserDialogFragment extends DialogFragment {
 
     private void makeUserOperation() throws JSONException {
         JSONObject jsonBody = new JSONObject();
+        if (userId != -1) jsonBody.put("id", userId);
         jsonBody.put("username", username);
         jsonBody.put("password", password);
         String requestBody = jsonBody.toString();

@@ -20,6 +20,15 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/baseline_menu_24" />
 
+        <ImageView
+            android:id="@+id/delete_button"
+            android:layout_width="38dp"
+            android:layout_height="37dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/username"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_delete_forever_24" />
+
         <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"
@@ -31,15 +40,6 @@
         app:layout_constraintEnd_toStartOf="@+id/delete_button"
         app:layout_constraintStart_toEndOf="@+id/menu_button"
         app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-        android:id="@+id/delete_button"
-        android:layout_width="38dp"
-        android:layout_height="37dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/username"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_delete_forever_24" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

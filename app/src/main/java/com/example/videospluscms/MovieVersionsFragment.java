@@ -12,6 +12,6 @@ public class MovieVersionsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle SavedInstanceState) {
-        return inflater.inflate(R.layout.fragment_movie_versions, container, false);
+        return inflater.inflate(R.layout.fragment_view, container, false);
     }
 }

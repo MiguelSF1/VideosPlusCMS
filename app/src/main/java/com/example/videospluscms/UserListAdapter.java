@@ -28,7 +28,7 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     @NonNull
     @Override
     public UserListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_user, parent, false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_user_movie, parent, false);
         return new ViewHolder(inflate);
     }
 
@@ -39,18 +39,14 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
         holder.menuButton.setOnClickListener(v -> {
             MainActivity activity = (MainActivity) holder.itemView.getContext();
-            UserDialogFragment userDialogFragment = new UserDialogFragment(users.get(position).getUsername(), users.get(position).getPassword(), activity);
+            UserDialogFragment userDialogFragment = new UserDialogFragment(users.get(position).getUserId(),users.get(position).getUsername(), users.get(position).getPassword(), activity);
             userDialogFragment.show(activity.getSupportFragmentManager(), "User Information");
         });
 
         holder.deleteButton.setOnClickListener(v-> {
             RequestQueue requestQueue = VolleySingleton.getInstance(holder.itemView.getContext()).getRequestQueue();
             StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://192.168.1.103:8080/api/users/" + users.get(position).getUserId(),
-                    response -> {
-                        Toast.makeText(holder.itemView.getContext(), "User deleted successfully", Toast.LENGTH_SHORT).show();
-                        users.remove(position);
-                        notifyItemRemoved(position);
-                        },
+                    response -> Toast.makeText(holder.itemView.getContext(), "User deleted successfully", Toast.LENGTH_SHORT).show(),
                     error -> Toast.makeText(holder.itemView.getContext(), "User deletion failed", Toast.LENGTH_SHORT).show());
 
             requestQueue.add(stringRequest);

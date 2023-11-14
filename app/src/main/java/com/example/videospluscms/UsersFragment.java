@@ -24,15 +24,14 @@ import java.util.List;
 
 public class UsersFragment extends Fragment {
     private RecyclerView recyclerView;
-    UserListAdapter userListAdapter;
 
     public UsersFragment() {}
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle SavedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_users, container, false);
-        recyclerView = view.findViewById(R.id.users_recycler_view);
+        View view = inflater.inflate(R.layout.fragment_view, container, false);
+        recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
 
@@ -57,7 +56,7 @@ public class UsersFragment extends Fragment {
         StringRequest usersStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/api/users", response -> {
             Type listType = new TypeToken<ArrayList<User>>(){}.getType();
             List<User> users = new Gson().fromJson(response, listType);
-            userListAdapter = new UserListAdapter(users);
+            UserListAdapter userListAdapter = new UserListAdapter(users);
             recyclerView.setAdapter(userListAdapter);
         }, error -> Log.d("failure", "sendRequestUsers: Failed "));
 
