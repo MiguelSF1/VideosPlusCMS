@@ -25,7 +25,8 @@ public class MovieDialogFragment extends DialogFragment {
     private EditText titleEditText, releaseDateEditText, durationEditText, posterEditText, ratingEditText, summaryEditText;
     private String title, releaseDate, poster, summary;
     private final int requestType;
-    private int movieId, duration;
+    private int movieId;
+    private Integer duration;
     private Float rating;
     private final Activity activity;
 
@@ -63,7 +64,7 @@ public class MovieDialogFragment extends DialogFragment {
         if (requestType == Request.Method.POST) {
             titleEditText.setText(title);
             releaseDateEditText.setText(releaseDate);
-            durationEditText.setText(duration);
+            durationEditText.setText(duration.toString());
             posterEditText.setText(poster);
             ratingEditText.setText(rating.toString());
             summaryEditText.setText(summary);

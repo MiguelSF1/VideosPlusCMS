@@ -34,20 +34,21 @@ public class MovieVersionsListAdapter extends RecyclerView.Adapter<MovieVersions
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MovieVersionsListAdapter.ViewHolder holder, int position) {
-        //holder.title.setText(movieVersions.get(position).getMovieId());
+        holder.movieId.setText(movieVersions.get(position).getMovieId().toString());
         holder.format.setText(movieVersions.get(position).getMovieFormat());
         holder.resolution.setText(movieVersions.get(position).getMovieResolution());
 
         holder.menuButton.setOnClickListener(v -> {
             MainActivity activity = (MainActivity) holder.itemView.getContext();
-            MovieVersionsDialogFragment movieVersionsDialogFragment = new MovieVersionsDialogFragment(movieVersions.get(position).getMovieId(),
-                    movieVersions.get(position).getMovieFormat(), movieVersions.get(position).getMovieResolution(), movieVersions.get(position).getMovieLink(), activity);
+            MovieVersionsDialogFragment movieVersionsDialogFragment = new MovieVersionsDialogFragment(movieVersions.get(position).getVersionId(),
+                    movieVersions.get(position).getMovieId(), movieVersions.get(position).getMovieFormat(),
+                    movieVersions.get(position).getMovieResolution(), movieVersions.get(position).getMovieLink(), activity);
             movieVersionsDialogFragment.show(activity.getSupportFragmentManager(), "Movie Version Information");
         });
 
         holder.deleteButton.setOnClickListener(v-> {
             RequestQueue requestQueue = VolleySingleton.getInstance(holder.itemView.getContext()).getRequestQueue();
-            StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://192.168.1.103:8080/api/movieVersions/" + movieVersions.get(position).getMovieId(),
+            StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://192.168.1.103:8080/api/movieVersions/" + movieVersions.get(position).getVersionId(),
                     response -> Toast.makeText(holder.itemView.getContext(), "Movie Version deleted successfully", Toast.LENGTH_SHORT).show(),
                     error -> Toast.makeText(holder.itemView.getContext(), "Movie Version deletion failed", Toast.LENGTH_SHORT).show());
 
@@ -61,11 +62,11 @@ public class MovieVersionsListAdapter extends RecyclerView.Adapter<MovieVersions
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, format, resolution;
+        TextView movieId, format, resolution;
         ImageView menuButton, deleteButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.title_movieVersion);
+            movieId = itemView.findViewById(R.id.movieId_movieVersion);
             format = itemView.findViewById(R.id.format_movieVersion);
             resolution = itemView.findViewById(R.id.resolution_movieVersion);
             menuButton = itemView.findViewById(R.id.menu_button_movieVersion);

@@ -27,13 +27,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     @NonNull
     @Override
     public MovieListAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_user_movie, parent, false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.viewholder_movie, parent, false);
         return new MovieListAdapter.ViewHolder(inflate);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull MovieListAdapter.ViewHolder holder, int position) {
+        holder.movieId.setText(movies.get(position).getMovieId().toString());
         holder.title.setText(movies.get(position).getTitle());
 
         holder.menuButton.setOnClickListener(v -> {
@@ -62,13 +63,14 @@ public class MovieListAdapter extends RecyclerView.Adapter<MovieListAdapter.View
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title;
+        TextView title, movieId;
         ImageView menuButton, deleteButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            title = itemView.findViewById(R.id.username);
-            menuButton = itemView.findViewById(R.id.menu_button);
-            deleteButton = itemView.findViewById(R.id.delete_button);
+            title = itemView.findViewById(R.id.title);
+            movieId = itemView.findViewById(R.id.movieId);
+            menuButton = itemView.findViewById(R.id.menu_button_movie);
+            deleteButton = itemView.findViewById(R.id.delete_button_movie);
         }
     }
 }

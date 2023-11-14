@@ -22,7 +22,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Write resolution..."
-        android:inputType="textPassword"
+        android:inputType="text"
         android:minHeight="48dp"
         app:layout_constraintBottom_toTopOf="@+id/link_editText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -78,6 +78,30 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/link_textView"
         app:layout_constraintTop_toBottomOf="@+id/resolution_editText" />
+
+    <TextView
+        android:id="@+id/movieId_textView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:height="48dp"
+        android:gravity="center_vertical"
+        android:text="MovieId"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toStartOf="@+id/movieId_editText"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/link_textView" />
+
+    <EditText
+        android:id="@+id/movieId_editText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Write movieId..."
+        android:inputType="number"
+        android:minHeight="48dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/movieId_textView"
+        app:layout_constraintTop_toBottomOf="@+id/link_editText" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

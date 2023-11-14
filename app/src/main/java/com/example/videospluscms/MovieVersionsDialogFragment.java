@@ -22,10 +22,11 @@ import org.json.JSONObject;
 import java.nio.charset.StandardCharsets;
 
 public class MovieVersionsDialogFragment extends DialogFragment {
-    private EditText formatEditText, resolutionEditText, linkEditText;
+    private EditText formatEditText, resolutionEditText, linkEditText, movieIdEditText;
     private String format, resolution, link;
     private final int requestType;
-    private int movieId;
+    private int versionId;
+    private Integer movieId;
     private final Activity activity;
 
     public MovieVersionsDialogFragment(Activity activity) {
@@ -33,11 +34,12 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         this.activity = activity;
     }
 
-    public MovieVersionsDialogFragment(int movieId,String format, String resolution, String link, Activity activity) {
+    public MovieVersionsDialogFragment(int versionId, int movieId, String format, String resolution, String link, Activity activity) {
         this.movieId = movieId;
         this.format = format;
         this.resolution = resolution;
         this.link = link;
+        this.versionId = versionId;
         this.activity = activity;
         requestType = Request.Method.POST;
     }
@@ -52,22 +54,25 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         formatEditText = view.findViewById(R.id.format_editText);
         resolutionEditText = view.findViewById(R.id.resolution_editText);
         linkEditText = view.findViewById(R.id.link_editText);
+        movieIdEditText = view.findViewById(R.id.movieId_editText);
 
         if (requestType == Request.Method.POST) {
             formatEditText.setText(format);
             resolutionEditText.setText(resolution);
             linkEditText.setText(link);
+            movieIdEditText.setText(movieId.toString());
         }
 
-        builder.setView(view).setTitle("User Information").setNegativeButton("Cancel", (dialog, which) -> {
+        builder.setView(view).setTitle("Movie Version Information").setNegativeButton("Cancel", (dialog, which) -> {
         }).setPositiveButton("Ok", (dialog, which) -> {
             if (formatEditText.getText().length() == 0 || resolutionEditText.getText().length() == 0
-            || linkEditText.getText().length() == 0) {
+            || linkEditText.getText().length() == 0 || movieIdEditText.getText().length() == 0) {
                 Toast.makeText(activity, "Operation failed: Empty input", Toast.LENGTH_SHORT).show();
             } else {
                 format = formatEditText.getText().toString();
                 resolution = resolutionEditText.getText().toString();
                 link = linkEditText.getText().toString();
+                movieId = Integer.parseInt(movieIdEditText.getText().toString());
                 try {
                     makeMovieVersionOperation();
 
@@ -82,7 +87,8 @@ public class MovieVersionsDialogFragment extends DialogFragment {
 
     private void makeMovieVersionOperation() throws JSONException {
         JSONObject jsonBody = new JSONObject();
-        if (requestType == Request.Method.POST) jsonBody.put("movieId", movieId);
+        if (requestType == Request.Method.POST) jsonBody.put("id", versionId);
+        jsonBody.put("movieId", movieId);
         jsonBody.put("movieFormat", format);
         jsonBody.put("movieResolution", resolution);
         jsonBody.put("movieLink", link);
