@@ -1,5 +1,6 @@
-package com.example.videospluscms;
+package com.example.videospluscms.fragment;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -15,6 +16,8 @@ import androidx.fragment.app.DialogFragment;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.example.videospluscms.R;
+import com.example.videospluscms.object.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +47,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         requestType = Request.Method.POST;
     }
 
+    @SuppressLint("SetTextI18n")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

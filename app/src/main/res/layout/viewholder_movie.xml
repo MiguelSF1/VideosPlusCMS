@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" >
@@ -18,7 +17,8 @@
             app:layout_constraintEnd_toStartOf="@+id/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_menu_24" />
+            app:srcCompat="@drawable/baseline_menu_24"
+            android:contentDescription="@string/menu_contentDescription_text" />
 
         <ImageView
             android:id="@+id/delete_button_movie"
@@ -27,7 +27,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/title"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_delete_forever_24" />
+            app:srcCompat="@drawable/baseline_delete_forever_24"
+            android:contentDescription="@string/delete_contentDescription_text" />
 
         <TextView
             android:id="@+id/movieId"
@@ -36,7 +37,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
             android:textSize="26sp"
-            android:text="movieId" />
+            android:text="@string/movieid_text" />
 
         <TextView
             android:id="@+id/title"
@@ -44,7 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:text="title"
+            android:text="@string/title_text"
             android:textSize="26sp"
             app:layout_constraintEnd_toStartOf="@+id/delete_button"
             app:layout_constraintStart_toEndOf="@+id/menu_button"

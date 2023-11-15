@@ -9,25 +9,31 @@
         android:id="@+id/format_editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Write format..."
+        android:hint="@string/format_editText_text"
         android:inputType="text"
         android:minHeight="48dp"
+        android:textColorHint="#8D6E63"
         app:layout_constraintBottom_toTopOf="@+id/resolution_editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/format_textView"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints=""
+        tools:ignore="VisualLintTextFieldSize" />
 
     <EditText
         android:id="@+id/resolution_editText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="Write resolution..."
+        android:autofillHints=""
+        android:hint="@string/resolution_editText_text"
         android:inputType="text"
         android:minHeight="48dp"
+        android:textColorHint="#8D6E63"
         app:layout_constraintBottom_toTopOf="@+id/link_editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/resolution_textView"
-        app:layout_constraintTop_toBottomOf="@+id/format_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/format_editText"
+        tools:ignore="VisualLintTextFieldSize" />
 
     <TextView
         android:id="@+id/format_textView"
@@ -35,7 +41,7 @@
         android:layout_height="wrap_content"
         android:height="48dp"
         android:gravity="center_vertical"
-        android:text="Format"
+        android:text="@string/format_textView_text"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/resolution_textView"
         app:layout_constraintEnd_toStartOf="@+id/format_editText"
@@ -48,7 +54,7 @@
         android:layout_height="wrap_content"
         android:height="48dp"
         android:gravity="center_vertical"
-        android:text="Resolution"
+        android:text="@string/resolution_textView_text"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/link_textView"
         app:layout_constraintEnd_toStartOf="@+id/resolution_editText"
@@ -61,7 +67,7 @@
         android:layout_height="wrap_content"
         android:height="48dp"
         android:gravity="center_vertical"
-        android:text="Link"
+        android:text="@string/link_textView_text"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/link_editText"
         app:layout_constraintStart_toStartOf="parent"
@@ -72,12 +78,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:minHeight="48dp"
-        android:hint="Write link..."
+        android:hint="@string/link_editText_text"
         android:inputType="text"
+        android:minHeight="48dp"
+        android:textColorHint="#8D6E63"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/link_textView"
-        app:layout_constraintTop_toBottomOf="@+id/resolution_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/resolution_editText"
+        android:autofillHints=""
+        tools:ignore="VisualLintTextFieldSize" />
 
     <TextView
         android:id="@+id/movieId_textView"
@@ -85,7 +94,7 @@
         android:layout_height="wrap_content"
         android:height="48dp"
         android:gravity="center_vertical"
-        android:text="MovieId"
+        android:text="@string/movieid_textView_text"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/movieId_editText"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,12 +105,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:hint="Write movieId..."
+        android:hint="@string/movieId_editText_text"
         android:inputType="number"
         android:minHeight="48dp"
+        android:textColorHint="#8D6E63"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/movieId_textView"
-        app:layout_constraintTop_toBottomOf="@+id/link_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/link_editText"
+        android:autofillHints=""
+        tools:ignore="VisualLintTextFieldSize" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

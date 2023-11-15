@@ -1,4 +1,4 @@
-package com.example.videospluscms;
+package com.example.videospluscms.adapter;
 
 import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
@@ -14,6 +14,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.example.videospluscms.R;
+import com.example.videospluscms.activity.MainActivity;
+import com.example.videospluscms.fragment.UserDialogFragment;
+import com.example.videospluscms.object.User;
+import com.example.videospluscms.object.VolleySingleton;
 
 import java.util.List;
 

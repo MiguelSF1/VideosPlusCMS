@@ -1,4 +1,4 @@
-package com.example.videospluscms;
+package com.example.videospluscms.object;
 
 import android.content.Context;
 

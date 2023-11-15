@@ -1,4 +1,4 @@
-package com.example.videospluscms;
+package com.example.videospluscms.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +15,8 @@ import androidx.fragment.app.DialogFragment;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.example.videospluscms.R;
+import com.example.videospluscms.object.VolleySingleton;
 
 import org.json.JSONException;
 import org.json.JSONObject;

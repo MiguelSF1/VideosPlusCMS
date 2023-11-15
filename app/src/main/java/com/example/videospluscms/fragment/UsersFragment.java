@@ -1,4 +1,4 @@
-package com.example.videospluscms;
+package com.example.videospluscms.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +14,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
+import com.example.videospluscms.R;
+import com.example.videospluscms.adapter.UserListAdapter;
+import com.example.videospluscms.object.User;
+import com.example.videospluscms.object.VolleySingleton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -22,10 +26,10 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieVersionsFragment extends Fragment {
+public class UsersFragment extends Fragment {
     private RecyclerView recyclerView;
 
-    public MovieVersionsFragment() {}
+    public UsersFragment() {}
 
     @Nullable
     @Override
@@ -36,8 +40,8 @@ public class MovieVersionsFragment extends Fragment {
         FloatingActionButton floatingActionButton = view.findViewById(R.id.floatingActionButton);
 
         floatingActionButton.setOnClickListener(v -> {
-            MovieVersionsDialogFragment movieVersionsDialogFragment = new MovieVersionsDialogFragment(getActivity());
-            movieVersionsDialogFragment.show(getActivity().getSupportFragmentManager(), "Movie Version Information");
+            UserDialogFragment userDialogFragment = new UserDialogFragment(getActivity());
+            userDialogFragment.show(getActivity().getSupportFragmentManager(), "User Information");
         });
 
         return view;
@@ -47,19 +51,19 @@ public class MovieVersionsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        getMovieVersions();
+       getUsers();
 
     }
 
-    private void getMovieVersions() {
+    private void getUsers() {
         RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
-        StringRequest movieVersionsStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/api/movieVersions", response -> {
-            Type listType = new TypeToken<ArrayList<MovieVersion>>(){}.getType();
-            List<MovieVersion> movieVersions = new Gson().fromJson(response, listType);
-            MovieVersionsListAdapter movieVersionsListAdapter = new MovieVersionsListAdapter(movieVersions);
-            recyclerView.setAdapter(movieVersionsListAdapter);
-        }, error -> Log.d("failure", "sendRequestMovieVersions: Failed "));
+        StringRequest usersStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/api/users", response -> {
+            Type listType = new TypeToken<ArrayList<User>>(){}.getType();
+            List<User> users = new Gson().fromJson(response, listType);
+            UserListAdapter userListAdapter = new UserListAdapter(users);
+            recyclerView.setAdapter(userListAdapter);
+        }, error -> Log.d("failure", "sendRequestUsers: Failed "));
 
-        requestQueue.add(movieVersionsStringRequest);
+        requestQueue.add(usersStringRequest);
     }
 }

@@ -1,4 +1,4 @@
-package com.example.videospluscms;
+package com.example.videospluscms.object;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

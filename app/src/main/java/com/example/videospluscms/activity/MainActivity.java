@@ -1,10 +1,14 @@
-package com.example.videospluscms;
+package com.example.videospluscms.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 
+import com.example.videospluscms.fragment.MovieVersionsFragment;
+import com.example.videospluscms.fragment.MoviesFragment;
+import com.example.videospluscms.R;
+import com.example.videospluscms.fragment.UsersFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
