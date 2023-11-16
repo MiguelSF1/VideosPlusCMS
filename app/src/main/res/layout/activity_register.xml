@@ -7,7 +7,7 @@
     tools:context=".activity.LoginActivity">
 
     <EditText
-        android:id="@+id/username_input"
+        android:id="@+id/username_input_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -16,13 +16,13 @@
         android:inputType="text"
         android:minHeight="48dp"
         android:textColorHint="#8D6E63"
-        app:layout_constraintBottom_toTopOf="@+id/password_input"
+        app:layout_constraintBottom_toTopOf="@+id/password_input_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_textView" />
+        app:layout_constraintTop_toBottomOf="@+id/register_textView" />
 
     <EditText
-        android:id="@+id/password_input"
+        android:id="@+id/password_input_register"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:autofillHints=""
@@ -31,41 +31,56 @@
         android:inputType="textPassword"
         android:minHeight="48dp"
         android:textColorHint="#8D6E63"
-        app:layout_constraintBottom_toTopOf="@+id/sign_in_button"
+        app:layout_constraintBottom_toTopOf="@+id/password_input2_editText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username_input" />
+        app:layout_constraintTop_toBottomOf="@+id/username_input_register" />
 
     <Button
-        android:id="@+id/sign_in_button"
+        android:id="@+id/sign_up_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/sign_in_input_text"
+        android:text="@string/sign_up_button_text"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/register_button"
+        app:layout_constraintBottom_toTopOf="@+id/login_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_input" />
+        app:layout_constraintTop_toBottomOf="@+id/password_input2_editText" />
 
     <TextView
-        android:id="@+id/login_textView"
+        android:id="@+id/register_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="100dp"
-        android:text="@string/login_textView_text"
+        android:text="@string/register_textView_text"
         android:textSize="50sp"
-        app:layout_constraintBottom_toTopOf="@+id/username_input"
+        app:layout_constraintBottom_toTopOf="@+id/username_input_register"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/register_button"
+        android:id="@+id/login_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/register_button_text"
+        android:text="@string/login_button_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sign_in_button" />
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_button" />
+
+    <EditText
+        android:id="@+id/password_input2_editText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/password_input2_editText_text"
+        android:inputType="textPassword"
+        android:minHeight="48dp"
+        android:textColorHint="#8D6E63"
+        app:layout_constraintBottom_toTopOf="@+id/sign_up_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/password_input_register"
+        android:autofillHints="" />
 </androidx.constraintlayout.widget.ConstraintLayout>

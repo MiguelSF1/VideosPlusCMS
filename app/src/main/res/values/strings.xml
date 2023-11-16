@@ -39,4 +39,10 @@
     <string name="format_movieVersion_text">format</string>
     <string name="resolution_movieVersion_text">resolution</string>
     <string name="movieid_movieVersion_text">movieId</string>
+    <string name="login_textView_text">Login</string>
+    <string name="register_button_text">Register</string>
+    <string name="login_button_text">Login</string>
+    <string name="password_input2_editText_text">Confirm Password</string>
+    <string name="register_textView_text">Register</string>
+    <string name="sign_up_button_text">Sign up</string>
 </resources>
