@@ -79,8 +79,8 @@ public class MovieVersionsDialogFragment extends DialogFragment {
 
         builder.setView(view).setTitle("Movie Version Information").setNegativeButton("Cancel", (dialog, which) -> {
         }).setPositiveButton("Ok", (dialog, which) -> {
-            if (movieIdEditText.getText().length() == 0) {
-                Toast.makeText(activity, "Operation failed: Empty id", Toast.LENGTH_SHORT).show();
+            if (movieIdEditText.getText().length() == 0 || filePath == null) {
+                Toast.makeText(activity, "Operation failed: Empty id or no video selected", Toast.LENGTH_SHORT).show();
             } else {
                 movieId = Integer.parseInt(movieIdEditText.getText().toString());
                 UploadThread uploadThread = new UploadThread(movieId, filePath, requireActivity().getApplicationContext());
@@ -101,7 +101,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
             assert uri != null;
             videoSend(context, uri);
         } else {
-            throw new IllegalStateException("have to pick video");
+            Toast.makeText(requireContext(),"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
         }
     }
 
