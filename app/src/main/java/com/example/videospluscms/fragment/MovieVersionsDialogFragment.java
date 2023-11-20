@@ -99,13 +99,13 @@ public class MovieVersionsDialogFragment extends DialogFragment {
             Uri uri = data.getData();
             Context context = requireContext().getApplicationContext();
             assert uri != null;
-            videoSend(context, uri);
+            createCopyForPath(context, uri);
         } else {
             Toast.makeText(requireContext(),"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
         }
     }
 
-    public void videoSend(@NonNull Context context, @NonNull Uri uri) {
+    public void createCopyForPath(@NonNull Context context, @NonNull Uri uri) {
         final ContentResolver contentResolver = context.getContentResolver();
         if (contentResolver == null)
             return;
