@@ -1,50 +1,48 @@
 package com.example.videospluscms.fragment;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import android.Manifest;
+
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
 import com.example.videospluscms.R;
-import com.example.videospluscms.object.VolleySingleton;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.StandardCharsets;
+import com.example.videospluscms.object.UploadThread;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 public class MovieVersionsDialogFragment extends DialogFragment {
-    private EditText formatEditText, resolutionEditText, linkEditText, movieIdEditText;
-    private String format, resolution, link;
-    private final int requestType;
-    private int versionId;
+    private EditText movieIdEditText;
+    private Intent myFileIntent;
     private Integer movieId;
     private final Activity activity;
+    String filePathv;
 
     public MovieVersionsDialogFragment(Activity activity) {
-        requestType = Request.Method.PUT;
         this.activity = activity;
-    }
-
-    public MovieVersionsDialogFragment(int versionId, int movieId, String format, String resolution, String link, Activity activity) {
-        this.movieId = movieId;
-        this.format = format;
-        this.resolution = resolution;
-        this.link = link;
-        this.versionId = versionId;
-        this.activity = activity;
-        requestType = Request.Method.POST;
     }
 
     @SuppressLint("SetTextI18n")
@@ -55,64 +53,88 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_movie_version, null);
 
-        formatEditText = view.findViewById(R.id.format_editText);
-        resolutionEditText = view.findViewById(R.id.resolution_editText);
-        linkEditText = view.findViewById(R.id.link_editText);
         movieIdEditText = view.findViewById(R.id.movieId_editText);
+        Button uploadButton = view.findViewById(R.id.upload_button);
 
-        if (requestType == Request.Method.POST) {
-            formatEditText.setText(format);
-            resolutionEditText.setText(resolution);
-            linkEditText.setText(link);
-            movieIdEditText.setText(movieId.toString());
-        }
+
+        uploadButton.setOnClickListener(v -> {
+            myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            myFileIntent.setType("video/*");
+            try {
+                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                } else {
+                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                    myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                    myFileIntent.setType("video/*");
+                    startActivityForResult(galleryIntent, 10);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
+
 
         builder.setView(view).setTitle("Movie Version Information").setNegativeButton("Cancel", (dialog, which) -> {
         }).setPositiveButton("Ok", (dialog, which) -> {
-            if (formatEditText.getText().length() == 0 || resolutionEditText.getText().length() == 0
-            || linkEditText.getText().length() == 0 || movieIdEditText.getText().length() == 0) {
-                Toast.makeText(activity, "Operation failed: Empty input", Toast.LENGTH_SHORT).show();
+            if (movieIdEditText.getText().length() == 0) {
+                Toast.makeText(activity, "Operation failed: Empty id", Toast.LENGTH_SHORT).show();
             } else {
-                format = formatEditText.getText().toString();
-                resolution = resolutionEditText.getText().toString();
-                link = linkEditText.getText().toString();
                 movieId = Integer.parseInt(movieIdEditText.getText().toString());
-                try {
-                    makeMovieVersionOperation();
-
-                } catch (JSONException e) {
-                    throw new RuntimeException(e);
-                }
+                UploadThread uploadThread = new UploadThread(movieId, filePathv, requireActivity().getApplicationContext());
+                uploadThread.start();
             }
         });
+
         return builder.create();
     }
 
 
-    private void makeMovieVersionOperation() throws JSONException {
-        JSONObject jsonBody = new JSONObject();
-        if (requestType == Request.Method.POST) jsonBody.put("id", versionId);
-        jsonBody.put("movieId", movieId);
-        jsonBody.put("movieFormat", format);
-        jsonBody.put("movieResolution", resolution);
-        jsonBody.put("movieLink", link);
-        String requestBody = jsonBody.toString();
-        RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            Uri uri = data.getData();
+            Context context = requireContext().getApplicationContext();
+            videoSend(context, uri);
+        } else {
+            throw new IllegalStateException("Unexpected value: " + requestCode);
+        }
+    }
 
-        StringRequest stringRequest = new StringRequest(requestType, "http://192.168.1.103:8080/api/movieVersions",
-                response -> Toast.makeText(activity, "Completed", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
+    public void videoSend(@NonNull Context context, @NonNull Uri uri) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        if (contentResolver == null)
+            return;
+        filePathv = context.getApplicationInfo().dataDir + File.separator + "video.mp4";
+        Log.d("erro", uri.getEncodedPath());
+        Log.d("erro", filePathv);
+        File file = new File(filePathv);
+        try {
+            InputStream inputStream = contentResolver.openInputStream(uri);
+            if (inputStream == null)
+                return;
+            OutputStream outputStream = new FileOutputStream(file);
+            byte[] buf = new byte[20971520];
+            int len;
+            while ((len = inputStream.read(buf)) > 0)
+                outputStream.write(buf, 0, len);
+            outputStream.close();
+            inputStream.close();
+        } catch (IOException ignore) {
+        }
+    }
 
-            @Override
-            public byte[] getBody() {
-                return requestBody.getBytes(StandardCharsets.UTF_8);
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        @Override
+        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+            myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            myFileIntent.setType("video/");
+            startActivityForResult(galleryIntent, 10);
+        } else {
+            Toast.makeText(getContext(), "Unable to access files.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

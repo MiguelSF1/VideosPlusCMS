@@ -57,7 +57,7 @@ public class UsersFragment extends Fragment {
 
     private void getUsers() {
         RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
-        StringRequest usersStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/api/users", response -> {
+        StringRequest usersStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/users", response -> {
             Type listType = new TypeToken<ArrayList<User>>(){}.getType();
             List<User> users = new Gson().fromJson(response, listType);
             UserListAdapter userListAdapter = new UserListAdapter(users);

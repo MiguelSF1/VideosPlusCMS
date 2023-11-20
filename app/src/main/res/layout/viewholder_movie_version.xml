@@ -10,17 +10,6 @@
         android:layout_margin="8dp">
 
         <ImageView
-            android:id="@+id/menu_button_movieVersion"
-            android:layout_width="38dp"
-            android:layout_height="37dp"
-            android:paddingTop="5dp"
-            app:layout_constraintEnd_toStartOf="@+id/movieId_movieVersion"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_menu_24"
-            android:contentDescription="@string/menu_contentDescription_text" />
-
-        <ImageView
             android:id="@+id/delete_button_movieVersion"
             android:layout_width="38dp"
             android:layout_height="37dp"
