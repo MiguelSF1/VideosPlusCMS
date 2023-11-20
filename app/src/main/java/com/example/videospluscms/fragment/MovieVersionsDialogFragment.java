@@ -13,7 +13,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.provider.OpenableColumns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -107,9 +107,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         final ContentResolver contentResolver = context.getContentResolver();
         if (contentResolver == null)
             return;
-        filePathv = context.getApplicationInfo().dataDir + File.separator + "video.mp4";
-        Log.d("erro", uri.getEncodedPath());
-        Log.d("erro", filePathv);
+        filePathv = context.getApplicationInfo().dataDir + File.separator + getFileName(uri);
         File file = new File(filePathv);
         try {
             InputStream inputStream = contentResolver.openInputStream(uri);
@@ -136,5 +134,28 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         } else {
             Toast.makeText(getContext(), "Unable to access files.", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @SuppressLint("Range")
+    public String getFileName(Uri uri) {
+        String result = null;
+        if (uri.getScheme().equals("content")) {
+            Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
+            try {
+                if (cursor != null && cursor.moveToFirst()) {
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        if (result == null) {
+            result = uri.getPath();
+            int cut = result.lastIndexOf('/');
+            if (cut != -1) {
+                result = result.substring(cut + 1);
+            }
+        }
+        return result;
     }
 }
