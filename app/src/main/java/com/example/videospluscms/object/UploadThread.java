@@ -15,11 +15,11 @@ import java.nio.file.Paths;
 
 public class UploadThread extends Thread{
     Integer movieId;
-    String filePathv, filename;
+    String filePath, filename;
     Context context;
-    public UploadThread(Integer movieId, String filePathv, Context context){
+    public UploadThread(Integer movieId, String filePath, Context context){
         this.movieId = movieId;
-        this.filePathv = filePathv;
+        this.filePath = filePath;
         this.context = context;
         getFilename();
     }
@@ -38,7 +38,7 @@ public class UploadThread extends Thread{
             protected Map<String, DataPart> getByteData(){
                 Map<String, DataPart> params = new HashMap<>();
                 try {
-                    params.put("upload", new DataPart(filename, Files.readAllBytes(Paths.get(filePathv)), "multipart/form-data"));
+                    params.put("upload", new DataPart(filename, Files.readAllBytes(Paths.get(filePath)), "multipart/form-data"));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -50,7 +50,7 @@ public class UploadThread extends Thread{
     }
 
     public void getFilename() {
-        int lastIndexOf = filePathv.lastIndexOf("/");
-        filename =  filePathv.substring(lastIndexOf).substring(1);
+        int lastIndexOf = filePath.lastIndexOf("/");
+        filename =  filePath.substring(lastIndexOf).substring(1);
     }
 }

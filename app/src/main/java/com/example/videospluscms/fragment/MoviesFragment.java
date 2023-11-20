@@ -40,7 +40,7 @@ public class MoviesFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(v -> {
             MovieDialogFragment movieDialogFragment = new MovieDialogFragment(getActivity());
-            movieDialogFragment.show(getActivity().getSupportFragmentManager(), "Movie Information");
+            movieDialogFragment.show(requireActivity().getSupportFragmentManager(), "Movie Information");
         });
 
         return view;

@@ -41,7 +41,7 @@ public class MovieVersionsFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(v -> {
             MovieVersionsDialogFragment movieVersionsDialogFragment = new MovieVersionsDialogFragment(getActivity());
-            movieVersionsDialogFragment.show(getActivity().getSupportFragmentManager(), "Movie Version Information");
+            movieVersionsDialogFragment.show(requireActivity().getSupportFragmentManager(), "Movie Version Information");
         });
 
         return view;

@@ -29,17 +29,18 @@ import androidx.fragment.app.DialogFragment;
 import com.example.videospluscms.R;
 import com.example.videospluscms.object.UploadThread;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.util.Objects;
 
 public class MovieVersionsDialogFragment extends DialogFragment {
     private EditText movieIdEditText;
     private Intent myFileIntent;
     private Integer movieId;
     private final Activity activity;
-    String filePathv;
+    String filePath;
 
     public MovieVersionsDialogFragment(Activity activity) {
         this.activity = activity;
@@ -50,7 +51,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.dialog_fragment_movie_version, null);
 
         movieIdEditText = view.findViewById(R.id.movieId_editText);
@@ -82,7 +83,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
                 Toast.makeText(activity, "Operation failed: Empty id", Toast.LENGTH_SHORT).show();
             } else {
                 movieId = Integer.parseInt(movieIdEditText.getText().toString());
-                UploadThread uploadThread = new UploadThread(movieId, filePathv, requireActivity().getApplicationContext());
+                UploadThread uploadThread = new UploadThread(movieId, filePath, requireActivity().getApplicationContext());
                 uploadThread.start();
             }
         });
@@ -97,9 +98,10 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         if (resultCode == RESULT_OK) {
             Uri uri = data.getData();
             Context context = requireContext().getApplicationContext();
+            assert uri != null;
             videoSend(context, uri);
         } else {
-            throw new IllegalStateException("Unexpected value: " + requestCode);
+            throw new IllegalStateException("have to pick video");
         }
     }
 
@@ -107,13 +109,13 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         final ContentResolver contentResolver = context.getContentResolver();
         if (contentResolver == null)
             return;
-        filePathv = context.getApplicationInfo().dataDir + File.separator + getFileName(uri);
-        File file = new File(filePathv);
+        filePath = context.getApplicationInfo().dataDir + File.separator + getFileName(uri);
+        File file = new File(filePath);
         try {
             InputStream inputStream = contentResolver.openInputStream(uri);
             if (inputStream == null)
                 return;
-            OutputStream outputStream = new FileOutputStream(file);
+            OutputStream outputStream = Files.newOutputStream(file.toPath());
             byte[] buf = new byte[20971520];
             int len;
             while ((len = inputStream.read(buf)) > 0)
@@ -139,18 +141,16 @@ public class MovieVersionsDialogFragment extends DialogFragment {
     @SuppressLint("Range")
     public String getFileName(Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
-            Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null);
-            try {
+        if (Objects.equals(uri.getScheme(), "content")) {
+            try (Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
-            } finally {
-                cursor.close();
             }
         }
         if (result == null) {
             result = uri.getPath();
+            assert result != null;
             int cut = result.lastIndexOf('/');
             if (cut != -1) {
                 result = result.substring(cut + 1);

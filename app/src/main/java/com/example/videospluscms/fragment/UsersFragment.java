@@ -41,7 +41,7 @@ public class UsersFragment extends Fragment {
 
         floatingActionButton.setOnClickListener(v -> {
             UserDialogFragment userDialogFragment = new UserDialogFragment(getActivity());
-            userDialogFragment.show(getActivity().getSupportFragmentManager(), "User Information");
+            userDialogFragment.show(requireActivity().getSupportFragmentManager(), "User Information");
         });
 
         return view;
