@@ -15,8 +15,6 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.example.videospluscms.R;
-import com.example.videospluscms.activity.MainActivity;
-import com.example.videospluscms.fragment.UserDialogFragment;
 import com.example.videospluscms.object.User;
 import com.example.videospluscms.object.VolleySingleton;
 
@@ -42,12 +40,6 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
     public void onBindViewHolder(@NonNull UserListAdapter.ViewHolder holder, int position) {
         holder.username.setText(users.get(position).getUsername());
 
-        holder.menuButton.setOnClickListener(v -> {
-            MainActivity activity = (MainActivity) holder.itemView.getContext();
-            UserDialogFragment userDialogFragment = new UserDialogFragment(users.get(position).getUserId(),users.get(position).getUsername(), users.get(position).getPassword(), activity);
-            userDialogFragment.show(activity.getSupportFragmentManager(), "User Information");
-        });
-
         holder.deleteButton.setOnClickListener(v-> {
             RequestQueue requestQueue = VolleySingleton.getInstance(holder.itemView.getContext()).getRequestQueue();
             StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://192.168.1.103:8080/users/" + users.get(position).getUserId(),
@@ -65,11 +57,10 @@ public class UserListAdapter extends RecyclerView.Adapter<UserListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView username;
-        ImageView menuButton, deleteButton;
+        ImageView deleteButton;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             username = itemView.findViewById(R.id.username);
-            menuButton = itemView.findViewById(R.id.menu_button);
             deleteButton = itemView.findViewById(R.id.delete_button);
         }
     }

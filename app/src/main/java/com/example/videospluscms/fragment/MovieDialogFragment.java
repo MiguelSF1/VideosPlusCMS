@@ -26,9 +26,9 @@ import java.nio.charset.StandardCharsets;
 
 public class MovieDialogFragment extends DialogFragment {
     private EditText titleEditText, releaseDateEditText, durationEditText, posterEditText, ratingEditText, summaryEditText;
-    private String title, releaseDate, poster, summary;
+    private String title, poster, summary;
     private final int requestType;
-    private int movieId;
+    private int movieId, releaseDate;
     private Integer duration;
     private Float rating;
     private final Activity activity;
@@ -38,7 +38,7 @@ public class MovieDialogFragment extends DialogFragment {
         this.activity = activity;
     }
 
-    public MovieDialogFragment(int movieId, String title, int duration, String poster, Float rating, String releaseDate, String summary, Activity activity) {
+    public MovieDialogFragment(int movieId, String title, int duration, String poster, Float rating, int releaseDate, String summary, Activity activity) {
         this.movieId = movieId;
         this.title = title;
         this.releaseDate = releaseDate;
@@ -67,7 +67,7 @@ public class MovieDialogFragment extends DialogFragment {
 
         if (requestType == Request.Method.POST) {
             titleEditText.setText(title);
-            releaseDateEditText.setText(releaseDate);
+            releaseDateEditText.setText(String.valueOf(releaseDate));
             durationEditText.setText(duration.toString());
             posterEditText.setText(poster);
             ratingEditText.setText(rating.toString());
@@ -82,7 +82,7 @@ public class MovieDialogFragment extends DialogFragment {
                 Toast.makeText(activity, "Operation failed: Empty input", Toast.LENGTH_SHORT).show();
             } else {
                 title = titleEditText.getText().toString();
-                releaseDate = releaseDateEditText.getText().toString();
+                releaseDate = Integer.parseInt(releaseDateEditText.getText().toString());
                 duration = Integer.parseInt(durationEditText.getText().toString());
                 poster = posterEditText.getText().toString();
                 rating = Float.parseFloat(ratingEditText.getText().toString());
@@ -102,7 +102,9 @@ public class MovieDialogFragment extends DialogFragment {
 
     private void makeMovieOperation() throws JSONException {
         JSONObject jsonBody = new JSONObject();
-        if (requestType == Request.Method.POST) jsonBody.put("id", movieId);
+        if (requestType == Request.Method.POST) {
+            jsonBody.put("id", movieId);
+        }
         jsonBody.put("title", title);
         jsonBody.put("releaseDate", releaseDate);
         jsonBody.put("duration", duration);

@@ -25,7 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="@string/releaseDate_editText_text"
-        android:inputType="date"
+        android:inputType="number"
         android:minHeight="48dp"
         android:textColorHint="#8D6E63"
         app:layout_constraintBottom_toTopOf="@+id/duration_editText"

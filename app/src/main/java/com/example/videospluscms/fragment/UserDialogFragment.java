@@ -28,21 +28,10 @@ public class UserDialogFragment extends DialogFragment {
     private EditText passwordEditText;
     private String username = null;
     private String password = null;
-    private final int requestType;
-    private int userId = -1;
     private final Activity activity;
 
     public UserDialogFragment(Activity activity) {
-        requestType = Request.Method.PUT;
         this.activity = activity;
-    }
-
-    public UserDialogFragment(int userId,String username, String password, Activity activity) {
-        this.userId = userId;
-        this.username = username;
-        this.password = password;
-        this.activity = activity;
-        requestType = Request.Method.POST;
     }
 
     @NonNull
@@ -54,11 +43,6 @@ public class UserDialogFragment extends DialogFragment {
 
         usernameEditText = view.findViewById(R.id.username_editText);
         passwordEditText = view.findViewById(R.id.password_editText);
-
-        if (username != null && password != null) {
-            usernameEditText.setText(username);
-            passwordEditText.setText(password);
-        }
 
         builder.setView(view).setTitle("User Information").setNegativeButton("Cancel", (dialog, which) -> {
         }).setPositiveButton("Ok", (dialog, which) -> {
@@ -82,13 +66,12 @@ public class UserDialogFragment extends DialogFragment {
 
     private void makeUserOperation() throws JSONException {
         JSONObject jsonBody = new JSONObject();
-        if (userId != -1) jsonBody.put("id", userId);
         jsonBody.put("username", username);
         jsonBody.put("password", password);
         String requestBody = jsonBody.toString();
         RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
 
-        StringRequest stringRequest = new StringRequest(requestType, "http://192.168.1.103:8080/users",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://192.168.1.103:8080/users/register",
                 response -> Toast.makeText(activity, "Completed", Toast.LENGTH_SHORT).show(),
                 error -> Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()) {
             @Override
