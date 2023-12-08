@@ -69,7 +69,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 usersRequestQueue.add(usersStringRequest);
             } catch (JSONException e) {
-                throw new RuntimeException(e);
+                Toast.makeText(LoginActivity.this, "Failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

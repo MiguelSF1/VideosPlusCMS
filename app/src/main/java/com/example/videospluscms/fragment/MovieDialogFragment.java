@@ -92,7 +92,7 @@ public class MovieDialogFragment extends DialogFragment {
                     makeMovieOperation();
 
                 } catch (JSONException e) {
-                    throw new RuntimeException(e);
+                    Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show();
                 }
             }
         });

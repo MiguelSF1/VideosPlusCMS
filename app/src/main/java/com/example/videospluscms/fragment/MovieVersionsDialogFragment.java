@@ -14,6 +14,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -22,17 +23,30 @@ import android.widget.Toast;
 
 import android.Manifest;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
+import com.android.volley.DefaultRetryPolicy;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.example.videospluscms.R;
-import com.example.videospluscms.object.UploadThread;
+import com.example.videospluscms.activity.RegisterActivity;
+import com.example.videospluscms.object.VolleyMultipartRequest;
+import com.example.videospluscms.object.VolleySingleton;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MovieVersionsDialogFragment extends DialogFragment {
@@ -41,6 +55,8 @@ public class MovieVersionsDialogFragment extends DialogFragment {
     private Integer movieId;
     private final Activity activity;
     String filePath;
+    String filename;
+
 
     public MovieVersionsDialogFragment(Activity activity) {
         this.activity = activity;
@@ -57,52 +73,42 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         movieIdEditText = view.findViewById(R.id.movieId_editText);
         Button uploadButton = view.findViewById(R.id.upload_button);
 
+        ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK) {
+                            Intent data = result.getData();
+                            Uri uri = data.getData();
+                            createCopyForPath(activity, uri);
+                        } else {
+                            Toast.makeText(activity,"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
 
         uploadButton.setOnClickListener(v -> {
-            myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
+            myFileIntent = new Intent(Intent.ACTION_PICK);
             myFileIntent.setType("video/*");
-            try {
-                if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(requireActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-                } else {
-                    Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-                    myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-                    myFileIntent.setType("video/*");
-                    startActivityForResult(galleryIntent, 10);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            myFileIntent = Intent.createChooser(myFileIntent, "Choose a video");
+            activityResultLauncher.launch(myFileIntent);
         });
-
-
 
         builder.setView(view).setTitle("Movie Version Information").setNegativeButton("Cancel", (dialog, which) -> {
         }).setPositiveButton("Ok", (dialog, which) -> {
             if (movieIdEditText.getText().length() == 0 || filePath == null) {
                 Toast.makeText(activity, "Operation failed: Empty id or no video selected", Toast.LENGTH_SHORT).show();
             } else {
+                Toast.makeText(activity, "Upload started", Toast.LENGTH_SHORT).show();
                 movieId = Integer.parseInt(movieIdEditText.getText().toString());
-                UploadThread uploadThread = new UploadThread(movieId, filePath, requireActivity().getApplicationContext());
-                uploadThread.start();
+                getFilename();
+                uploadMovieVersion();
             }
         });
 
         return builder.create();
-    }
-
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Uri uri = data.getData();
-            Context context = requireContext().getApplicationContext();
-            assert uri != null;
-            createCopyForPath(context, uri);
-        } else {
-            Toast.makeText(requireContext(),"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
-        }
     }
 
     public void createCopyForPath(@NonNull Context context, @NonNull Uri uri) {
@@ -122,19 +128,8 @@ public class MovieVersionsDialogFragment extends DialogFragment {
                 outputStream.write(buf, 0, len);
             outputStream.close();
             inputStream.close();
-        } catch (IOException ignore) {
-        }
-    }
-
-        @Override
-        public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-            myFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
-            myFileIntent.setType("video/");
-            startActivityForResult(galleryIntent, 10);
-        } else {
-            Toast.makeText(getContext(), "Unable to access files.", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            Toast.makeText(activity, "Failed upload", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -158,4 +153,59 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         }
         return result;
     }
+
+    public void uploadMovieVersion() {
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, "http://192.168.1.103:8080/movieVersions/upload",
+                response -> Toast.makeText(activity, "Upload Completed", Toast.LENGTH_SHORT).show(),
+                error -> Toast.makeText(activity, "upload failed", Toast.LENGTH_SHORT).show()) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("movieId", movieId.toString());
+                return params;
+            }
+
+            @Override
+            protected Map<String, DataPart> getByteData(){
+                Map<String, DataPart> params = new HashMap<>();
+                try {
+                    params.put("upload", new DataPart(filename, Files.readAllBytes(Paths.get(filePath)), "multipart/form-data"));
+                } catch (IOException e) {
+                    Toast.makeText(activity, "failed upload", Toast.LENGTH_SHORT).show();
+                }
+                return params;
+            }
+        };
+        multipartRequest.setRetryPolicy(new DefaultRetryPolicy(
+                999999999,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        RequestQueue requestQueue = VolleySingleton.getInstance(requireActivity().getApplicationContext()).getRequestQueue();
+        requestQueue.add(multipartRequest);
+    }
+
+    public void getFilename() {
+        int lastIndexOf = filePath.lastIndexOf("/");
+        filename = filePath.substring(lastIndexOf).substring(1);
+    }
 }
+
+/*
+private String getRealPathFromURI(Context context, Uri contentUri) {
+   Cursor cursor = null;
+   try {
+       String[] proj = { MediaStore.Images.Media.DATA };
+       cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+       int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+       cursor.moveToFirst();
+       return cursor.getString(column_index);
+   } catch (Exception e) {
+       Log.e(TAG, "getRealPathFromURI Exception : " + e.toString());
+       return "";
+   } finally {
+       if (cursor != null) {
+           cursor.close();
+       }
+   }
+}
+ */
