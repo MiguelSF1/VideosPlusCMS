@@ -71,7 +71,7 @@ public class UserDialogFragment extends DialogFragment {
         String requestBody = jsonBody.toString();
         RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://192.168.1.103:8080/users/register",
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, "http://34.34.73.78:8080/users/register",
                 response -> Toast.makeText(activity, "Completed", Toast.LENGTH_SHORT).show(),
                 error -> Toast.makeText(activity, "Failed", Toast.LENGTH_SHORT).show()) {
             @Override

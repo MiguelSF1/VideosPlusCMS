@@ -6,48 +6,36 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
-import android.util.Log;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import android.Manifest;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.example.videospluscms.R;
-import com.example.videospluscms.activity.RegisterActivity;
 import com.example.videospluscms.object.VolleyMultipartRequest;
 import com.example.videospluscms.object.VolleySingleton;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class MovieVersionsDialogFragment extends DialogFragment {
     private EditText movieIdEditText;
@@ -75,16 +63,15 @@ public class MovieVersionsDialogFragment extends DialogFragment {
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
-                new ActivityResultCallback<ActivityResult>() {
-                    @Override
-                    public void onActivityResult(ActivityResult result) {
-                        if (result.getResultCode() == RESULT_OK) {
-                            Intent data = result.getData();
-                            Uri uri = data.getData();
-                            createCopyForPath(activity, uri);
-                        } else {
-                            Toast.makeText(activity,"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
-                        }
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        assert data != null;
+                        Uri uri = data.getData();
+                        assert uri != null;
+                        filePath = getRealPathFromURI(activity, uri);
+                    } else {
+                        Toast.makeText(activity,"Have to pick a video or operation will fail", Toast.LENGTH_SHORT).show();
                     }
                 }
         );
@@ -111,51 +98,8 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         return builder.create();
     }
 
-    public void createCopyForPath(@NonNull Context context, @NonNull Uri uri) {
-        final ContentResolver contentResolver = context.getContentResolver();
-        if (contentResolver == null)
-            return;
-        filePath = context.getApplicationInfo().dataDir + File.separator + getFileName(uri);
-        File file = new File(filePath);
-        try {
-            InputStream inputStream = contentResolver.openInputStream(uri);
-            if (inputStream == null)
-                return;
-            OutputStream outputStream = Files.newOutputStream(file.toPath());
-            byte[] buf = new byte[20971520];
-            int len;
-            while ((len = inputStream.read(buf)) > 0)
-                outputStream.write(buf, 0, len);
-            outputStream.close();
-            inputStream.close();
-        } catch (IOException e) {
-            Toast.makeText(activity, "Failed upload", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @SuppressLint("Range")
-    public String getFileName(Uri uri) {
-        String result = null;
-        if (Objects.equals(uri.getScheme(), "content")) {
-            try (Cursor cursor = activity.getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                }
-            }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            assert result != null;
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
-    }
-
     public void uploadMovieVersion() {
-        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, "http://192.168.1.103:8080/movieVersions/upload",
+        VolleyMultipartRequest multipartRequest = new VolleyMultipartRequest(Request.Method.POST, "http://34.34.73.78:8080/movieVersions/upload",
                 response -> Toast.makeText(activity, "Upload Completed", Toast.LENGTH_SHORT).show(),
                 error -> Toast.makeText(activity, "upload failed", Toast.LENGTH_SHORT).show()) {
             @Override
@@ -180,7 +124,7 @@ public class MovieVersionsDialogFragment extends DialogFragment {
                 999999999,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
-        RequestQueue requestQueue = VolleySingleton.getInstance(requireActivity().getApplicationContext()).getRequestQueue();
+        RequestQueue requestQueue = VolleySingleton.getInstance(activity).getRequestQueue();
         requestQueue.add(multipartRequest);
     }
 
@@ -188,24 +132,24 @@ public class MovieVersionsDialogFragment extends DialogFragment {
         int lastIndexOf = filePath.lastIndexOf("/");
         filename = filePath.substring(lastIndexOf).substring(1);
     }
+
+    private String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Video.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            assert cursor != null;
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } catch (Exception e) {
+            return "";
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
 }
 
-/*
-private String getRealPathFromURI(Context context, Uri contentUri) {
-   Cursor cursor = null;
-   try {
-       String[] proj = { MediaStore.Images.Media.DATA };
-       cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
-       int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-       cursor.moveToFirst();
-       return cursor.getString(column_index);
-   } catch (Exception e) {
-       Log.e(TAG, "getRealPathFromURI Exception : " + e.toString());
-       return "";
-   } finally {
-       if (cursor != null) {
-           cursor.close();
-       }
-   }
-}
- */
+

@@ -43,7 +43,7 @@ public class MovieVersionsListAdapter extends RecyclerView.Adapter<MovieVersions
 
         holder.deleteButton.setOnClickListener(v-> {
             RequestQueue requestQueue = VolleySingleton.getInstance(holder.itemView.getContext()).getRequestQueue();
-            StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://192.168.1.103:8080/movieVersions/" + movieVersions.get(position).getVersionId(),
+            StringRequest stringRequest = new StringRequest(Request.Method.DELETE, "http://34.34.73.78:8080/movieVersions/" + movieVersions.get(position).getVersionId(),
                     response -> Toast.makeText(holder.itemView.getContext(), "Movie Version deleted successfully", Toast.LENGTH_SHORT).show(),
                     error -> Toast.makeText(holder.itemView.getContext(), "Movie Version deletion failed", Toast.LENGTH_SHORT).show());
 

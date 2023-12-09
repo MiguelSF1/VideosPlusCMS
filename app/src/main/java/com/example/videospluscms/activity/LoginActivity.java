@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity {
                 jsonBody.put("password", password);
                 String responseBody = jsonBody.toString();
 
-                StringRequest usersStringRequest = new StringRequest(Request.Method.POST, "http://192.168.1.103:8080/usersCMS/login",
+                StringRequest usersStringRequest = new StringRequest(Request.Method.POST, "http://34.34.73.78:8080/usersCMS/login",
                         response -> startActivity(new Intent(LoginActivity.this, MainActivity.class)),
                         error -> Toast.makeText(LoginActivity.this, "Failed Login Attempt", Toast.LENGTH_SHORT).show()) {
                     @Override

@@ -57,7 +57,7 @@ public class MovieVersionsFragment extends Fragment {
 
     private void getMovieVersions() {
         RequestQueue requestQueue = VolleySingleton.getInstance(getContext()).getRequestQueue();
-        StringRequest movieVersionsStringRequest = new StringRequest(Request.Method.GET, "http://192.168.1.103:8080/movieVersions", response -> {
+        StringRequest movieVersionsStringRequest = new StringRequest(Request.Method.GET, "http://34.34.73.78:8080/movieVersions", response -> {
             Type listType = new TypeToken<ArrayList<MovieVersion>>(){}.getType();
             List<MovieVersion> movieVersions = new Gson().fromJson(response, listType);
             MovieVersionsListAdapter movieVersionsListAdapter = new MovieVersionsListAdapter(movieVersions);
